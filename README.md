@@ -1,6 +1,6 @@
 # awesome_loader
 
-An awesome way to load your (non-Rails) Ruby application! Tired of tons of manualy requires? Me too! So I made this little gem to augment Ruby's built-in `autoload` functionality. Works pretty much the same as in Rails. (NOTE Don't confuse this with auto-**re**loading.)
+An awesome way to load your (non-Rails) Ruby application! Tired of tons of manual requires? Me too! So I made this little gem to augment Ruby's built-in `autoload` functionality. Works pretty much the same as in Rails. (NOTE Don't confuse this with auto-**re**loading.)
 
 ## Install
 
