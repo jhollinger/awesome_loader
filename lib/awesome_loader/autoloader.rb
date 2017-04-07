@@ -26,7 +26,7 @@ module AwesomeLoader
 
     def paths(array, root_depth: default_root_depth)
       files = Dir.glob File.join *array
-      root_regex = Regexp.new "^#{File.join *array[0, root_depth]}/?"
+      root_regex = Regexp.new "^([^/]+/){%d}" % root_depth
 
       # Get an array of nested dirs (parent dir always comes before child dir)
       nested_dirs = files.
@@ -46,13 +46,12 @@ module AwesomeLoader
       }
 
       # For each file, look up it's dir module and set autoload on the class/module in the file.
-      files.each do |full_path|
-        rel_dir = File.dirname full_path.sub(root_regex, '')
-        abs_path = self.root.join(full_path)
-        file_const_name = Utils.camelize File.basename(full_path).sub(RB_EXT, '')
-        mod = modules.fetch rel_dir
-        mod.autoload file_const_name, abs_path
-        self.all_files << abs_path if eager_load
+      files.each do |path|
+        full_path = self.root.join(path)
+        const_name = Utils.camelize File.basename(path).sub(RB_EXT, '')
+        mod = modules.fetch File.dirname path.sub(root_regex, '')
+        mod.autoload const_name, full_path
+        self.all_files << full_path if eager_load
       end
 
       self
