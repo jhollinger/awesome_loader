@@ -10,9 +10,17 @@ Just add to your Gemfile.
 
 ## Basic Usage
 
-Let's say your (non-Rails) app has a very Rails-like layout. `app/models`, `app/helpers`, etc. And those might have some subdirectories that correspond to module names. This is all you have to do:
+`awesome_loader` assumes that your directories and files are all in "snake case" (my_dir/my_file.rb), and that your Ruby Modules and Classes are all in "camel case" (MyDir::MyFile). Additionally, it assumes that your directory structure matches your Module structure. In fact it will traverse your directory tree and make sure all those Modules are created for you.
 
-    # The root_depth argument is saying "Start creating modules for dirs after the first 2 levels"
+Let's say you have a fairly simple layout, somewhat inspired by Rails.
+
+* `app/models/user.rb' contains `User`
+* `app/models/widget.rb' contains `Widget`
+* `app/models/billing/line_item.rb' contains `Billing::LineItem`
+* `app/helpers/app_helpers.rb' contains `AppHelpers`
+
+Given the those files and their contents, this is all you have to tell `awesome_loader`. Note the `root_depth: 2` argument. That's saying, "Only start creating modules for dirs after the first 2 levels." That means `app/*` won't get any modules, but deeper directories, like `app/models/billing`, will.
+
     AwesomeLoader.autoload root_depth: 2 do
       paths %w(app ** *.rb)
     end
