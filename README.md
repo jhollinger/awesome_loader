@@ -33,11 +33,10 @@ Maybe your app structure is more complicated. That's fine too.
 
 ## Eager Loading
 
-If you're running a threaded server like Puma or Thin, it's often considered best practice to load everything
-up-front, instead of possibly loading something during a request Thread. At least in production.
+If you're running a threaded server like Puma or Thin, it's usually considered best practice to load everything up-front (at least in production), instead of lettings things load while other threads might be running. The `eager_load` option will ensure that all files are loaded before the block exits.
 
     AwesomeLoader.autoload root_depth: 2, eager_load: true do
-      ...
+      paths %w(app ** *.rb)
     end
 
 ## License
