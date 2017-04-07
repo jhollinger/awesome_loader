@@ -14,10 +14,10 @@ Just add to your Gemfile.
 
 Let's say you have a fairly simple layout, somewhat inspired by Rails.
 
-* `app/models/user.rb' contains `User`
-* `app/models/widget.rb' contains `Widget`
-* `app/models/billing/line_item.rb' contains `Billing::LineItem`
-* `app/helpers/app_helpers.rb' contains `AppHelpers`
+* `app/models/user.rb` contains `User`
+* `app/models/widget.rb` contains `Widget`
+* `app/models/billing/line_item.rb` contains `Billing::LineItem`
+* `app/helpers/app_helpers.rb` contains `AppHelpers`
 
 Given the those files and their contents, this is all you have to tell `awesome_loader`. Note the `root_depth: 2` argument. That's saying, "Only start creating modules for dirs after the first 2 levels." That means `app/*` won't get any modules, but deeper directories, like `app/models/billing`, will.
 
