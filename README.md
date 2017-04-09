@@ -16,15 +16,15 @@ Let's say you have a fairly simple layout, somewhat inspired by Rails.
 * `app/models/billing/line_item.rb` contains `class Billing::LineItem`
 * `app/helpers/app_helpers.rb` contains `module AppHelpers`
 
-Given those files and their contents, this is all you have to tell `awesome_loader`. Note the `root_depth: 2` argument. That's saying, "Only start creating modules for dirs after the first 2 levels." That means `app` and `app/*` won't get any modules, but deeper directories, like `app/models/billing`, will.
+Given those files and their contents, this is all you have to tell `awesome_loader`. 
 
-    AwesomeLoader.autoload root_depth: 2 do
+    AwesomeLoader.autoload do
       paths %w(app ** *.rb)
     end
 
 ## Advanced Usage
 
-Maybe your app structure is more complicated. That's fine too.
+Maybe your app structure is more complicated. That's fine too. Note the `root_depth: 2` argument. That's saying, "Only start creating modules for dirs after the first 2 levels." That means `app` and `app/*` won't get any modules, but deeper directories, like `app/models/billing`, will. `2` is the default, as you can see in the above example.
 
     AwesomeLoader.autoload root_depth: 2 do
       # These first few work just like above
@@ -42,7 +42,7 @@ For more details and options, [check out the documentation](http://www.rubydoc.i
 
 If you're running a threaded server like Puma or Thin, it's usually considered best practice to load everything up-front (at least in production), instead of lettings things load while other threads might be running. The `eager_load` option will ensure that all files are loaded before the block exits.
 
-    AwesomeLoader.autoload root_depth: 2, eager_load: true do
+    AwesomeLoader.autoload eager_load: is_prod? do
       paths %w(app ** *.rb)
     end
 

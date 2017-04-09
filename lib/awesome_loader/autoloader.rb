@@ -14,13 +14,13 @@ module AwesomeLoader
   #     paths %w(app routes ** *.rb), root_depth: 1
   #   end
   #
-  # @param root_depth [String] Tells AwesomeLoader to start creating Modules for dirs *after* this level
+  # @param root_depth [Integer] Tells AwesomeLoader to start creating Modules for dirs *after* this level (default 2)
   # @param root_path [String] Path to root of the application (default Dir.pwd)
   # @param root_module [Module] Module to load your modules into (default Object). You'll probably always want to keep the default.
   # @param eager_load [Boolean] Make sure all files get loaded by the time the block finishes (default false)
   # @return [AwesomeLoader::Autoloader]
   #
-  def self.autoload(root_depth:, root_path: Dir.pwd, root_module: Object, eager_load: false, &block)
+  def self.autoload(root_depth: Autoloader::DEFAULT_ROOT_DEPTH, root_path: Dir.pwd, root_module: Object, eager_load: false, &block)
     autoloader = Autoloader.new(root_depth: root_depth, root_path: root_path, root_module: root_module, eager_load: eager_load)
     if block
       autoloader.instance_eval(&block)
@@ -39,6 +39,8 @@ module AwesomeLoader
   #     finalize!
   #
   class Autoloader
+    # The default root_dept for new instances
+    DEFAULT_ROOT_DEPTH = 2
     RB_EXT = /\.rb$/
 
     # @return [Integer] root depth used for all paths unless otherwise specified
@@ -56,12 +58,12 @@ module AwesomeLoader
     #
     # Initialize a new AwesomeLoader::Autoloader.
     #
-    # @param root_depth [String] Tells AwesomeLoader to start creating Modules for dirs *after* this level
+    # @param root_depth [Integer] Tells AwesomeLoader to start creating Modules for dirs *after* this level (default 2)
     # @param root_path [String] Path to root of the application (default Dir.pwd)
     # @param root_module [Module] Module to load your modules into (default Object). You'll probably always want to keep the default.
     # @param eager_load [Boolean] Make sure all files get loaded by the time the block finishes (default false)
     #
-    def initialize(root_depth:, root_path: Dir.pwd, root_module: Object, eager_load: false)
+    def initialize(root_depth: DEFAULT_ROOT_DEPTH, root_path: Dir.pwd, root_module: Object, eager_load: false)
       @root_path, @root_module = Pathname.new(root_path.to_s), root_module
       @default_root_depth, @eager_load = root_depth, eager_load
       @all_files = Set.new

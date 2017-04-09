@@ -66,9 +66,9 @@ class AutoloaderTest < Minitest::Test
     end
   end
 
-  def test_works_without_specifying_root_module
+  def test_works_with_defaults
     tmp_app app_files do |app_root|
-      AwesomeLoader::Autoloader.new(root_depth: 2, root_path: app_root).
+      AwesomeLoader::Autoloader.new(root_path: app_root).
         paths(%w(app ** *.rb))
       assert ::Billing.autoload? :LineItem
       assert ::Billing::Recurring::Monthly.autoload? :Run
