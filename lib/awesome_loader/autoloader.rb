@@ -2,7 +2,7 @@ require 'set'
 require 'pathname'
 
 #
-# A module that holds all the awesomeness.
+# The module that holds the awesomeness.
 #
 module AwesomeLoader
   #
@@ -24,7 +24,7 @@ module AwesomeLoader
     autoloader = Autoloader.new(root_depth: root_depth, root_path: root_path, root_module: root_module, eager_load: eager_load)
     if block
       autoloader.instance_eval(&block)
-      autoloader.finialize!
+      autoloader.finalize!
     end
     autoloader
   end
@@ -36,7 +36,7 @@ module AwesomeLoader
   #     paths(%w(app models ** *.rb)).
   #     paths(%w(app helpers *.rb)).
   #     paths(%w(app routes ** *.rb), root_depth: 1).
-  #     finialize!
+  #     finalize!
   #
   class Autoloader
     RB_EXT = /\.rb$/
@@ -93,7 +93,7 @@ module AwesomeLoader
     #
     # Perform any final operations or cleanup. If eager_load is true, this is where they're loaded.
     #
-    def finialize!
+    def finalize!
       all_files.each { |f| require f } if eager_load
       all_files.clear
       self
