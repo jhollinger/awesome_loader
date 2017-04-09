@@ -30,7 +30,7 @@ module AwesomeLoader
   end
 
   #
-  # The autoloader. Normally it's used indirectly through AwesomeLoader.autoload, but you can use it directly if you like:
+  # The autoloader. Normally it's used indirectly through `AwesomeLoader.autoload`, but you can use it directly if you like:
   #
   #   AwesomeLoader::Autoloader.new(root_depth: 2).
   #     paths(%w(app models ** *.rb)).

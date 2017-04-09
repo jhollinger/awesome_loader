@@ -20,7 +20,7 @@ module AwesomeLoader
     end
 
     #
-    # Returns (building if necessary) the Module represented by the dir path. The path should be relative
+    # Returns (recursively creating if necessary) the Module represented by the dir path. The path should be relative
     # to your application root/working directory.
     #
     #   # Since root_depth is 2, the first 2 dirs in any path will be ignored
@@ -36,7 +36,7 @@ module AwesomeLoader
     #   => Billing::Foo
     #
     # @param rel_filepath [String] The path, relative to your application root, to the file you want the module for.
-    # @return [Module] The module that should contain the constant in the file.
+    # @return [Module] The module
     #
     def module(rel_path)
       module_names(rel_path).reduce(root_module) { |parent_mod, mod_name|
@@ -62,6 +62,9 @@ module AwesomeLoader
     #
     #   builder.nested_dirs('src/features/billing/foo')
     #   => ['Billing', 'Foo']
+    #
+    # @param rel_filepath [String] The path, relative to your application root, to the file you want the module for.
+    # @return [Array<String>] Array of nested Module names
     #
     def module_names(rel_path)
       dir_names = Utils.clean_path(rel_path).split '/'
