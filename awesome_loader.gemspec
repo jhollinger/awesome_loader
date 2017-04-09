@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = "An awesome way to autoload your Ruby application"
   s.description = "An awesome wrapper for Ruby's built-in autoload"
-  s.date = '2017-04-07'
+  s.date = '2017-04-09'
   s.authors = ['Jordan Hollinger']
   s.email = 'jordan.hollinger@gmail.com'
   s.homepage = 'https://github.com/jhollinger/awesome_loader'
