@@ -4,7 +4,9 @@ module AwesomeLoader
   #
   module Utils
     # Regex to match "snake name" paths
-    SNAKE = /_([a-z])/
+    SNAKE = %r{_([a-z])}
+    LEADING_SEP = %r{^/}
+    TRAILING_SEP = %r{/$}
 
     #
     # Converts a snake_case_name to a CamelCaseName.
@@ -14,6 +16,16 @@ module AwesomeLoader
     #
     def self.camelize(name)
       name.capitalize.gsub(SNAKE) { |match| match[1].capitalize }
+    end
+
+    #
+    # Returns the path with any leading or trailing /'s removed.
+    #
+    # @param path [String]
+    # @return [String]
+    #
+    def self.clean_path(path)
+      path.sub(LEADING_SEP, '').sub(TRAILING_SEP, '')
     end
   end
 end

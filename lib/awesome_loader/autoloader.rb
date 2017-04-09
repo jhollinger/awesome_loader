@@ -15,12 +15,13 @@ module AwesomeLoader
   #   end
   #
   # @param root_depth [String] Tells AwesomeLoader to start creating Modules for dirs *after* this level
-  # @param root [String] Path to root of the application (default Dir.cwd)
+  # @param root_path [String] Path to root of the application (default Dir.cwd)
+  # @param root_module [Module] Module to load your modules into (default Object). You'll probably always want to keep the default.
   # @param eager_load [Boolean] Make sure all files get loaded by the time the block finishes (default false)
   # @return [AwesomeLoader::Autoloader]
   #
-  def self.autoload(root_depth:, root: Dir.cwd, eager_load: false, &block)
-    autoloader = Autoloader.new(root: root, root_depth: root_depth, eager_load: eager_load)
+  def self.autoload(root_depth:, root_path: Dir.cwd, root_module: Object, eager_load: false, &block)
+    autoloader = Autoloader.new(root_depth: root_depth, root_path: root_path, root_module: root_module, eager_load: eager_load)
     if block
       autoloader.instance_eval(&block)
       autoloader.finialize!
@@ -40,13 +41,15 @@ module AwesomeLoader
   class Autoloader
     RB_EXT = /\.rb$/
 
-    # @return [Pathname] the application root
-    attr_reader :root
     # @return [Integer] root depth used for all paths unless otherwise specified
     attr_reader :default_root_depth
+    # @return [Pathname] the application root
+    attr_reader :root_path
+    # @return [Module] the root ruby Module
+    attr_reader :root_module
     # @return [Boolean] whether or not to automatically load all files once they're defined
     attr_reader :eager_load
-    # @return [Array<String>] all defined files, ready to be eager_loaded
+    # @return [Set<String>] all defined files, ready to be eager_loaded
     attr_reader :all_files
     private :all_files
 
@@ -54,13 +57,14 @@ module AwesomeLoader
     # Initialize a new AwesomeLoader::Autoloader.
     #
     # @param root_depth [String] Tells AwesomeLoader to start creating Modules for dirs *after* this level
-    # @param root [String] Path to root of the application (default Dir.cwd)
+    # @param root_path [String] Path to root of the application (default Dir.cwd)
+    # @param root_module [Module] Module to load your modules into (default Object). You'll probably always want to keep the default.
     # @param eager_load [Boolean] Make sure all files get loaded by the time the block finishes (default false)
     #
-    def initialize(root_depth:, root: Dir.cwd, eager_load: false)
-      @root = Pathname.new(root.to_s)
+    def initialize(root_depth:, root_path: Dir.cwd, root_module: Object, eager_load: false)
+      @root_path, @root_module = Pathname.new(root_path.to_s), root_module
       @default_root_depth, @eager_load = root_depth, eager_load
-      @all_files = []
+      @all_files = Set.new
     end
 
     #
@@ -68,40 +72,21 @@ module AwesomeLoader
     #
     #   autoloader.paths %w(app models ** *.rb)
     #
-    # @param array [Array<String>] A glob pattern as an array.
+    # @param glob [Array<String>] A glob pattern as an array.
     # @paths root_depth [Integer] Depth at which to start creating modules for dirs. Defaults to whatever the AwesomeLoader::Autoloader instance was initialized with.
     # @return [AwesomeLoader::Autoloader] returns self, so you can chain calls
     #
-    def paths(array, root_depth: default_root_depth)
-      files = Dir.glob File.join *array
-      root_regex = Regexp.new "^([^/]+/){%d}" % root_depth
-
-      # Get an array of nested dirs (parent dir always comes before child dir)
-      nested_dirs = files.
-        map { |path| File.dirname(path).sub(root_regex, '') }.uniq.
-        reduce(Set.new) { |dirs, leaf_dir|
-          dirs + leaf_dir.split('/').reduce([]) { |a, dir|
-            a << File.join(*a, dir)
-          }
-        }
-
-      # Create modules for each dir. Set a Hash of dir path => Module.
-      modules = nested_dirs.reduce({'.' => Object}) { |a, dir|
-        parent_module = a.fetch File.dirname dir
-        new_module = parent_module.const_set Utils.camelize(File.basename dir), Module.new
-        a[dir] = new_module
-        a
-      }
-
-      # For each file, look up it's dir module and set autoload on the class/module in the file.
-      files.each do |path|
-        full_path = self.root.join(path)
-        const_name = Utils.camelize File.basename(path).sub(RB_EXT, '')
-        mod = modules.fetch File.dirname path.sub(root_regex, '')
-        mod.autoload const_name, full_path
+    def paths(glob, root_depth: default_root_depth)
+      builder = ModuleBuilder.new(root_depth: root_depth, root_module: root_module)
+      Dir.glob(File.join root_path.to_s, *glob).each do |full_path|
+        next if all_files.include? full_path
         all_files << full_path if eager_load
-      end
 
+        rel_path = full_path.sub root_path.to_s, ''
+        dir_path, file_name = File.split rel_path
+        const_name = Utils.camelize file_name.sub RB_EXT, ''
+        builder.module(dir_path).autoload const_name, full_path
+      end
       self
     end
 
