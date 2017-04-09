@@ -1,6 +1,6 @@
 # awesome_loader
 
-So you've created your bespoke Ruby application without Rails. Then you thought, "Bollocks, I have to manually require all my application files, and in a certain order! Plus I must explicitly define all my submodules - they don't magically appear based on the directory structure like they did in Rails. There has to be a better way!" Well now there is.
+So you've created your bespoke Ruby application without Rails. Then you thought, "Bollocks, I have to manually require all my application files, and in a certain order! And I have to explicitly define all my submodules - they don't magically appear based on the directory structure like they did in Rails. There has to be a better way!" Well now there is.
 
 ## Install
 
@@ -16,7 +16,7 @@ Let's say you have a fairly simple layout, somewhat inspired by Rails.
 * `app/models/billing/line_item.rb` contains `class Billing::LineItem`
 * `app/helpers/app_helpers.rb` contains `module AppHelpers`
 
-Given those files and their contents, this is all you have to tell `awesome_loader`. 
+Given those files and their contents, this is all you have to tell `awesome_loader`. Awesome, right?
 
     AwesomeLoader.autoload do
       paths %w(app ** *.rb)
