@@ -36,7 +36,7 @@ Maybe your app structure is more complicated. That's fine too. Note the `root_de
       paths %w(app entities ** *.rb), root_depth: 1
     end
 
-For more details and options, [check out the documentation](http://www.rubydoc.info/gems/awesome_loader).
+For more details and options, [check out the documentation](http://www.rubydoc.info/gems/awesome_loader/1.1.0).
 
 ## Eager Loading
 
