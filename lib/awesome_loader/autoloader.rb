@@ -93,10 +93,24 @@ module AwesomeLoader
     end
 
     #
+    # Same as Ruby's built-in require, except that it accepts a blob and requires all matching files.
+    # The require is immediate, the path is relative to the root_path, and no dir modules are created.
+    #
+    # @param glob [Array<String>] A glob pattern as an array.
+    # @return [AwesomeLoader::Autoloader] returns self, so you can chain calls
+    #
+    def require(glob)
+      Dir.glob(File.join root_path.to_s, *glob).each do |file|
+	Kernel.require file
+      end
+      self
+    end
+
+    #
     # Perform any final operations or cleanup. If eager_load is true, this is where they're loaded.
     #
     def finalize!
-      all_files.each { |f| require f } if eager_load
+      all_files.each { |f| Kernel.require f } if eager_load
       all_files.clear
       self
     end

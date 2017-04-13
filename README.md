@@ -27,13 +27,15 @@ Given those files and their contents, this is all you have to tell `awesome_load
 Maybe your app structure is more complicated. That's fine too. Note the `root_depth: 2` argument. That's saying, "Only start creating modules for dirs after the first 2 levels." That means `app` and `app/*` won't get any modules, but deeper directories, like `app/models/billing`, will. `2` is the default, as you can see in the above example.
 
     AwesomeLoader.autoload root_depth: 2 do
-      # These first few work just like above
-      paths %w(app models ** *.rb)
-      paths %w(app helpers ** *.rb)
-
-      # But the files in these dirs have top-level Routes and Entities modules
+      # These files have top-level Routes and Entities modules
       paths %w(app routes ** *.rb), root_depth: 1
       paths %w(app entities ** *.rb), root_depth: 1
+
+      # Load everything else using the default root_depth
+      paths %w(app ** *.rb)
+
+      # Load your app's initializers. Any classes/modules in them will be autoloaded.
+      require %w(config initializers *.rb)
     end
 
 For more details and options, [check out the documentation](http://www.rubydoc.info/gems/awesome_loader/1.1.0).

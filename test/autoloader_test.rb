@@ -9,6 +9,7 @@ class AutoloaderTest < Minitest::Test
   App2 = Module.new
   App3 = Module.new
   App4 = Module.new
+  App5 = Module.new
 
   def setup
     $global_var = 0
@@ -74,6 +75,20 @@ class AutoloaderTest < Minitest::Test
       assert ::Billing::Recurring::Monthly.autoload? :Run
       assert ::Billing::LineItem.is_a?(Class)
       assert ::Billing::Recurring::Monthly::Run.is_a?(Class)
+    end
+  end
+
+  def test_require_requires_and_autoloads_referenced_constants
+    files = app_files(App5).merge({
+      'config/initializers/foo.rb' => "#{App5.name}::REQUIRED_CONSTANT = \"Widget object id = \#\{#{App5.name}::Widget.object_id\}\""
+    })
+    tmp_app files do |app_root|
+      AwesomeLoader.autoload(root_depth: 2, root_path: app_root, root_module: App5) do
+        paths %w(app ** *.rb)
+        require %w(config initializers *.rb)
+      end
+      assert defined?(App5::REQUIRED_CONSTANT)
+      assert_equal "Widget object id = #{App5::Widget.object_id}", App5::REQUIRED_CONSTANT
     end
   end
 end
