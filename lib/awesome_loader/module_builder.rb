@@ -21,7 +21,8 @@ module AwesomeLoader
 
     #
     # Returns (recursively creating if necessary) the Module represented by the dir path. The path should be relative
-    # to your application root/working directory.
+    # to your application root/working directory. Directories are expected to use snake case, and the Modules will
+    # use camel case.
     #
     #   # Since root_depth is 2, the first 2 dirs in any path will be ignored
     #   builder = ModuleBuilder.new(root_depth: 2)

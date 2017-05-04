@@ -9,9 +9,8 @@ module AwesomeLoader
   # Set up an AwesomeLoader::Autoloader instance.
   #
   #   AwesomeLoader.autoload root_depth: 2 do
-  #     paths %w(app models ** *.rb)
-  #     paths %w(app helpers ** *.rb)
   #     paths %w(app routes ** *.rb), root_depth: 1
+  #     paths %w(app ** *.rb)
   #   end
   #
   # @param root_depth [Integer] Tells AwesomeLoader to start creating Modules for dirs *after* this level (default 2)
@@ -33,9 +32,8 @@ module AwesomeLoader
   # The autoloader. Normally it's used indirectly through `AwesomeLoader.autoload`, but you can use it directly if you like:
   #
   #   AwesomeLoader::Autoloader.new(root_depth: 2).
-  #     paths(%w(app models ** *.rb)).
-  #     paths(%w(app helpers *.rb)).
-  #     paths(%w(app routes ** *.rb), root_depth: 1).
+  #     paths(['app', 'routes', '**', '*.rb'], root_depth: 1).
+  #     paths(['app', '**', '*.rb']).
   #     finalize!
   #
   class Autoloader
@@ -82,7 +80,7 @@ module AwesomeLoader
       builder = ModuleBuilder.new(root_depth: root_depth, root_module: root_module)
       Dir.glob(File.join root_path.to_s, *glob).each do |full_path|
         next if all_files.include? full_path
-        all_files << full_path if eager_load
+        all_files << full_path
 
         rel_path = full_path.sub root_path.to_s, ''
         dir_path, file_name = File.split rel_path
