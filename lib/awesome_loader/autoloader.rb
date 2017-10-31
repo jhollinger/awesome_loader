@@ -99,7 +99,7 @@ module AwesomeLoader
     #
     def require(glob)
       Dir.glob(File.join root_path.to_s, *glob).each do |file|
-	Kernel.require file
+        Kernel.require file
       end
       self
     end
