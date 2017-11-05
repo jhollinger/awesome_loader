@@ -39,7 +39,6 @@ module AwesomeLoader
   class Autoloader
     # The default root_dept for new instances
     DEFAULT_ROOT_DEPTH = 2
-    RB_EXT = /\.rb$/
 
     # @return [Integer] root depth used for all paths unless otherwise specified
     attr_reader :default_root_depth
@@ -78,13 +77,14 @@ module AwesomeLoader
     #
     def paths(glob, root_depth: default_root_depth)
       builder = ModuleBuilder.new(root_depth: root_depth, root_module: root_module)
+      blank_str = ''
       Dir.glob(File.join root_path.to_s, *glob).each do |full_path|
         next if all_files.include? full_path
         all_files << full_path
 
-        rel_path = full_path.sub root_path.to_s, ''
+        rel_path = full_path.sub root_path.to_s, blank_str
         dir_path, file_name = File.split rel_path
-        const_name = Utils.camelize file_name.sub RB_EXT, ''
+        const_name = Utils.camelize file_name[0, file_name.size - 3]
         builder.module(dir_path).autoload const_name, full_path
       end
       self
