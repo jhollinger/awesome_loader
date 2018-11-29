@@ -2,6 +2,10 @@
 
 So you've created your bespoke Ruby application without Rails. Then you thought, "Bollocks, I have to manually require all my application files, and in a certain order! And I have to explicitly define all my submodules - they don't magically appear based on the directory structure like they did in Rails. There has to be a better way!" Well now there is.
 
+## Status
+
+This is an actively used and maintained project. It may look dead, but that's because there's nothing left to do.
+
 ## Install
 
 Add to your Gemfile.
